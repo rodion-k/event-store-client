@@ -37,25 +37,18 @@ use Throwable;
 /** @internal */
 final class ClusterDnsEndPointDiscoverer implements EndPointDiscoverer
 {
-    /** @var Logger */
-    private $log;
-    /** @var string */
-    private $clusterDns;
-    /** @var int */
-    private $maxDiscoverAttempts;
-    /** @var int */
-    private $managerExternalHttpPort;
+    private Logger $log;
+    private string $clusterDns;
+    private int $maxDiscoverAttempts;
+    private int $managerExternalHttpPort;
     /** @var GossipSeed[] */
-    private $gossipSeeds = [];
+    private array $gossipSeeds = [];
 
-    /** @var HttpClient */
-    private $httpClient;
+    private HttpClient $httpClient;
     /** @var MemberInfoDto[] */
-    private $oldGossip = [];
-    /** @var int */
-    private $gossipTimeout;
-    /** @var bool */
-    private $preferRandomNode;
+    private array $oldGossip = [];
+    private int $gossipTimeout;
+    private bool $preferRandomNode;
 
     /**
      * @param Logger $logger

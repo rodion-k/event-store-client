@@ -18,56 +18,35 @@ use Ramsey\Uuid\Uuid;
 
 class MemberInfoDto
 {
-    /** @var string */
-    private $instanceId;
+    private string $instanceId;
 
-    /** @var int */
-    private $timeStamp;
-    /** @var VNodeState */
-    private $state;
-    /** @var bool */
-    private $isAlive;
+    private int $timeStamp;
+    private ClusterMessages\VNodeState $state;
+    private bool $isAlive;
 
-    /** @var string */
-    private $internalTcpIp;
-    /** @var int */
-    private $internalTcpPort;
-    /** @var int */
-    private $internalSecureTcpPort;
+    private string $internalTcpIp;
+    private int $internalTcpPort;
+    private int $internalSecureTcpPort;
 
-    /** @var string */
-    private $externalTcpIp;
-    /** @var int */
-    private $externalTcpPort;
-    /** @var int */
-    private $externalSecureTcpPort;
+    private string $externalTcpIp;
+    private int $externalTcpPort;
+    private int $externalSecureTcpPort;
 
-    /** @var string */
-    private $internalHttpIp;
-    /** @var int */
-    private $internalHttpPort;
+    private string $internalHttpIp;
+    private int $internalHttpPort;
 
-    /** @var string */
-    private $externalHttpIp;
-    /** @var int */
-    private $externalHttpPort;
+    private string $externalHttpIp;
+    private int $externalHttpPort;
 
-    /** @var int */
-    private $lastCommitPosition;
-    /** @var int */
-    private $writerCheckpoint;
-    /** @var int */
-    private $chaserCheckpoint;
+    private int $lastCommitPosition;
+    private int $writerCheckpoint;
+    private int $chaserCheckpoint;
 
-    /** @var int */
-    private $epochPosition;
-    /** @var int */
-    private $epochNumber;
-    /** @var string */
-    private $epochId;
+    private int $epochPosition;
+    private int $epochNumber;
+    private string $epochId;
 
-    /** @var int */
-    private $nodePriority;
+    private int $nodePriority;
 
     public function __construct(array $data = [])
     {

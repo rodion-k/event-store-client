@@ -20,6 +20,7 @@ use Amp\Failure;
 use Amp\Loop;
 use Amp\Promise;
 use Amp\Success;
+use Closure;
 use Exception;
 use Generator;
 use PHPUnit\Framework\TestCase;
@@ -49,28 +50,17 @@ use Throwable;
 
 class catch_up_subscription_handles_errors extends TestCase
 {
-    /** @var int */
-    private static $timeoutMs = 2000;
-    /** @var FakeEventStoreConnection */
-    private $connection;
-    /** @var array|ResolvedEvent[] */
-    private $raisedEvents;
-    /** @var bool */
-    private $liveProcessingStarted;
-    /** @var bool */
-    private $isDropped;
-    /** @var Deferred */
-    private $dropEvent;
-    /** @var Deferred */
-    private $raisedEventEvent;
-    /** @var Throwable|null */
-    private $dropException;
-    /** @var SubscriptionDropReason */
-    private $dropReason;
-    /** @var EventStoreStreamCatchUpSubscription */
-    private $subscription;
-    /** @var string */
-    private static $streamId = 'stream1';
+    private static int $timeoutMs = 2000;
+    private FakeEventStoreConnection $connection;
+    private array $raisedEvents;
+    private bool $liveProcessingStarted;
+    private bool $isDropped;
+    private Deferred $dropEvent;
+    private Deferred $raisedEventEvent;
+    private ?Throwable $dropException;
+    private SubscriptionDropReason $dropReason;
+    private EventStoreStreamCatchUpSubscription $subscription;
+    private static string $streamId = 'stream1';
 
     protected function setUp(): void
     {
@@ -125,7 +115,7 @@ class catch_up_subscription_handles_errors extends TestCase
                 }
             },
             new class($props2) implements LiveProcessingStartedOnCatchUpSubscription {
-                private $props;
+                private array $props;
 
                 public function __construct(array &$props)
                 {
@@ -138,7 +128,7 @@ class catch_up_subscription_handles_errors extends TestCase
                 }
             },
             new class($props3) implements CatchUpSubscriptionDropped {
-                private $props;
+                private array $props;
 
                 public function __construct(array &$props)
                 {
@@ -249,9 +239,7 @@ class catch_up_subscription_handles_errors extends TestCase
         $expectedException = new Exception('Test');
 
         $this->connection->handleReadStreamEventsForwardAsync(
-            function ($stream, $start, $max): Promise {
-                return new Success($this->createStreamEventsSlice(0, 1, true));
-            }
+            fn ($stream, $start, $max): Promise => new Success($this->createStreamEventsSlice(0, 1, true))
         );
 
         $this->connection->handleSubscribeToStreamAsync(
@@ -272,15 +260,11 @@ class catch_up_subscription_handles_errors extends TestCase
         $expectedException = new Exception('Test');
 
         $this->connection->handleReadStreamEventsForwardAsync(
-            function ($stream, $start, $max): Promise {
-                return new Success($this->createStreamEventsSlice(0, 1, true));
-            }
+            fn ($stream, $start, $max): Promise => new Success($this->createStreamEventsSlice(0, 1, true))
         );
 
         $this->connection->handleSubscribeToStreamAsync(
-            function ($stream, $raise, $drop) use ($expectedException): Promise {
-                return new Failure($expectedException);
-            }
+            fn ($stream, $raise, $drop): Promise => new Failure($expectedException)
         );
 
         $this->assertStartFailsAndDropsSubscriptionWithException($expectedException);
@@ -309,9 +293,7 @@ class catch_up_subscription_handles_errors extends TestCase
         );
 
         $this->connection->handleSubscribeToStreamAsync(
-            function ($stream, $raise, $drop): Promise {
-                return new Success($this->createVolatileSubscription($raise, $drop, 1));
-            }
+            fn ($stream, $raise, $drop): Promise => new Success($this->createVolatileSubscription($raise, $drop, 1))
         );
 
         $this->assertStartFailsAndDropsSubscriptionWithException($expectedException);
@@ -340,9 +322,7 @@ class catch_up_subscription_handles_errors extends TestCase
         );
 
         $this->connection->handleSubscribeToStreamAsync(
-            function ($stream, $raise, $drop): Promise {
-                return new Success($this->createVolatileSubscription($raise, $drop, 1));
-            }
+            fn ($stream, $raise, $drop): Promise => new Success($this->createVolatileSubscription($raise, $drop, 1))
         );
 
         $this->assertStartFailsAndDropsSubscriptionWithException($expectedException);
@@ -384,9 +364,7 @@ class catch_up_subscription_handles_errors extends TestCase
         );
 
         $this->connection->handleSubscribeToStreamAsync(
-            function ($stream, $raise, $drop): Promise {
-                return new Success($this->createVolatileSubscription($raise, $drop, 1));
-            }
+            fn ($stream, $raise, $drop): Promise => new Success($this->createVolatileSubscription($raise, $drop, 1))
         );
 
         Promise\wait(call(function () use ($finalEvent): Generator {
@@ -488,14 +466,12 @@ class catch_up_subscription_handles_errors extends TestCase
             );
 
             $this->connection->handleSubscribeToStreamAsync(
-                function ($stream, $raise, $drop) use ($event1, $volatileEventStoreSubscription): Promise {
-                    return call(function () use ($raise, $drop, $event1, $volatileEventStoreSubscription): Generator {
-                        $volatileEventStoreSubscription2 = $this->createVolatileSubscription($raise, $drop, null);
-                        yield $raise($volatileEventStoreSubscription2, $event1);
+                fn ($stream, $raise, $drop): Promise => call(function () use ($raise, $drop, $event1, $volatileEventStoreSubscription): Generator {
+                    $volatileEventStoreSubscription2 = $this->createVolatileSubscription($raise, $drop, null);
+                    yield $raise($volatileEventStoreSubscription2, $event1);
 
-                        return yield new Success($volatileEventStoreSubscription);
-                    });
-                }
+                    return yield new Success($volatileEventStoreSubscription);
+                })
             );
 
             $reconnectDeferred = new Deferred();
@@ -525,8 +501,8 @@ class catch_up_subscription_handles_errors extends TestCase
     }
 
     private function createVolatileSubscription(
-        callable $raise,
-        callable $drop,
+        Closure $raise,
+        Closure $drop,
         ?int $lastEventNumber
     ): VolatileEventStoreSubscription {
         return new VolatileEventStoreSubscription(
@@ -568,9 +544,7 @@ class catch_up_subscription_handles_errors extends TestCase
                     }
                 },
                 false,
-                function () {
-                    return null;
-                }
+                fn () => null
             ),
             self::$streamId,
             -1,

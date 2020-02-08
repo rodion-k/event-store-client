@@ -21,10 +21,8 @@ use Prooph\EventStore\Exception\RuntimeException;
 /** @internal */
 class CountdownEvent
 {
-    /** @var int */
-    private $counter;
-    /** @var Deferred */
-    private $deferred;
+    private int $counter;
+    private Deferred $deferred;
 
     public function __construct(int $counter)
     {

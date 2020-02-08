@@ -23,12 +23,9 @@ use Prooph\EventStore\WriteResult;
 /** @internal */
 class StreamWriter
 {
-    /** @var EventStoreConnection */
-    private $connection;
-    /** @var string */
-    private $stream;
-    /** @var int */
-    private $version;
+    private EventStoreConnection $connection;
+    private string $stream;
+    private int $version;
 
     public function __construct(EventStoreConnection $connection, string $stream, int $version)
     {

@@ -22,10 +22,8 @@ use Prooph\EventStore\EventData;
 /** @internal */
 class TailWriter
 {
-    /** @var EventStoreConnection */
-    private $connection;
-    /** @var string */
-    private $stream;
+    private EventStoreConnection $connection;
+    private string $stream;
 
     public function __construct(EventStoreConnection $connection, string $stream)
     {

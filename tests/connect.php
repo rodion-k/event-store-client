@@ -32,8 +32,7 @@ use Throwable;
 
 class connect extends TestCase
 {
-    /** @var EndPoint */
-    private $blackhole;
+    private EndPoint $blackhole;
 
     protected function setUp(): void
     {

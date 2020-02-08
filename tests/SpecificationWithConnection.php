@@ -16,6 +16,7 @@ namespace ProophTest\EventStoreClient;
 use function Amp\call;
 use function Amp\Promise\wait;
 use Amp\Success;
+use Closure;
 use Generator;
 use Prooph\EventStore\Async\EventStoreConnection;
 use ProophTest\EventStoreClient\Helper\TestConnection;
@@ -23,8 +24,7 @@ use Throwable;
 
 trait SpecificationWithConnection
 {
-    /** @var EventStoreConnection */
-    protected $conn;
+    protected EventStoreConnection $conn;
 
     protected function given(): Generator
     {
@@ -37,7 +37,7 @@ trait SpecificationWithConnection
     }
 
     /** @throws Throwable */
-    protected function execute(callable $test): void
+    protected function execute(Closure $test): void
     {
         wait(call(function () use ($test) {
             $this->conn = TestConnection::create();

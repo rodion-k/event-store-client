@@ -17,6 +17,7 @@ use function Amp\call;
 use Amp\Promise;
 use Amp\Success;
 use Amp\TimeoutException;
+use Closure;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Async\EventAppearedOnSubscription;
 use Prooph\EventStore\Common\SystemRoles;
@@ -38,7 +39,7 @@ class subscribe_to_all_should extends TestCase
     /**
      * @throws Throwable
      */
-    private function execute(callable $function): void
+    private function execute(Closure $function): void
     {
         Promise\wait(call(function () use ($function) {
             $connection = TestConnection::create();
@@ -151,8 +152,7 @@ class subscribe_to_all_should extends TestCase
     private function appearedWithCountdown(CountdownEvent $appeared): EventAppearedOnSubscription
     {
         return new class($appeared) implements EventAppearedOnSubscription {
-            /** @var CountdownEvent */
-            private $appeared;
+            private CountdownEvent $appeared;
 
             public function __construct(CountdownEvent $appeared)
             {
@@ -173,8 +173,7 @@ class subscribe_to_all_should extends TestCase
     private function droppedWithCountdown(CountdownEvent $dropped): SubscriptionDropped
     {
         return new class($dropped) implements SubscriptionDropped {
-            /** @var CountdownEvent */
-            private $dropped;
+            private CountdownEvent $dropped;
 
             public function __construct(CountdownEvent $dropped)
             {

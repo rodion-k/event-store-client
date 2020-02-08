@@ -15,6 +15,7 @@ namespace ProophTest\EventStoreClient;
 
 use function Amp\call;
 use Amp\Promise;
+use Closure;
 use Generator;
 use PHPUnit\Framework\TestCase;
 use Prooph\EventStore\Async\EventStoreConnection;
@@ -29,15 +30,13 @@ use Throwable;
 
 class when_having_max_count_set_for_stream extends TestCase
 {
-    /** @var string */
-    private $stream = 'max-count-test-stream';
-    /** @var EventStoreConnection */
-    private $conn;
+    private string $stream = 'max-count-test-stream';
+    private EventStoreConnection $conn;
     /** @var EventData[] */
-    private $testEvents = [];
+    private array $testEvents = [];
 
     /** @throws Throwable */
-    private function execute(callable $function): void
+    private function execute(Closure $function): void
     {
         Promise\wait(call(function () use ($function) {
             $this->conn = TestConnection::create();

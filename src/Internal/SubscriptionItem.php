@@ -21,25 +21,16 @@ use Prooph\EventStoreClient\ClientOperations\SubscriptionOperation;
 /** @internal  */
 class SubscriptionItem
 {
-    /** @var SubscriptionOperation */
-    private $operation;
-    /** @var int */
-    private $maxRetries;
-    /** @var int */
-    private $timeout;
-    /** @var DateTimeImmutable */
-    private $created;
+    private SubscriptionOperation $operation;
+    private int $maxRetries;
+    private int $timeout;
+    private DateTimeImmutable $created;
 
-    /** @var string */
-    private $connectionId;
-    /** @var string */
-    private $correlationId;
-    /** @var bool */
-    private $isSubscribed;
-    /** @var int */
-    private $retryCount;
-    /** @var DateTimeImmutable */
-    private $lastUpdated;
+    private string $connectionId;
+    private string $correlationId;
+    private bool $isSubscribed;
+    private int $retryCount;
+    private DateTimeImmutable $lastUpdated;
 
     public function __construct(SubscriptionOperation $operation, int $maxRetries, int $timeout)
     {
