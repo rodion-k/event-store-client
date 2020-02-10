@@ -40,7 +40,7 @@ use Throwable;
 
 abstract class EventStoreCatchUpSubscription implements AsyncEventStoreCatchUpSubscription
 {
-    private static ResolvedEvent $dropSubscriptionEvent;
+    private static ?ResolvedEvent $dropSubscriptionEvent = null;
 
     private bool $isSubscribedToAll;
     private string $streamId;

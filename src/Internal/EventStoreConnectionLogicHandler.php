@@ -74,7 +74,7 @@ class EventStoreConnectionLogicHandler
     private SubscriptionsManager $subscriptions;
     private EventHandler $eventHandler;
     private StopWatch $stopWatch;
-    private string $timerTickWatcherId;
+    private string $timerTickWatcherId = '';
 
     private ReconnectionInfo $reconnInfo;
     private HeartbeatInfo $heartbeatInfo;

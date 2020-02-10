@@ -40,7 +40,7 @@ class TcpPackageConnection
     private string $targetHost;
     private bool $validateServer;
     private int $timeout;
-    private ?EncryptableSocket $connection;
+    private ?EncryptableSocket $connection = null;
     private bool $isClosed = true;
     private Closure $handlePackage;
     private Closure $onError;
