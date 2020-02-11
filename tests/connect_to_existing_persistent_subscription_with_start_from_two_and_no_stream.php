@@ -35,7 +35,7 @@ class connect_to_existing_persistent_subscription_with_start_from_two_and_no_str
     private string $stream;
     private PersistentSubscriptionSettings $settings;
     private string $group = 'startinbeginning1';
-    private ResolvedEvent $firstEvent;
+    private ?ResolvedEvent $firstEvent = null;
     private Deferred $resetEvent;
     private EventId $eventId;
     private bool $set = false;
@@ -65,8 +65,8 @@ class connect_to_existing_persistent_subscription_with_start_from_two_and_no_str
             $this->group,
             new class($this->set, $this->resetEvent, $this->firstEvent) implements EventAppearedOnPersistentSubscription {
                 private bool $set;
-                private $deferred;
-                private ResolvedEvent $firstEvent;
+                private Deferred $deferred;
+                private ?ResolvedEvent $firstEvent = null;
 
                 public function __construct(&$set, &$deferred, &$firstEvent)
                 {

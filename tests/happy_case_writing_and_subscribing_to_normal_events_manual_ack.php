@@ -41,7 +41,7 @@ class happy_case_writing_and_subscribing_to_normal_events_manual_ack extends Tes
 
     private int $bufferCount = 10;
     private Deferred $eventsReceived;
-    private int $eventReceivedCount;
+    private int $eventReceivedCount = 0;
 
     protected function setUp(): void
     {

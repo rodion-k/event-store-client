@@ -41,7 +41,7 @@ class happy_case_catching_up_to_link_to_events_auto_ack extends TestCase
     private const EVENT_WRITE_COUNT = self::BUFFER_COUNT * 2;
 
     private Deferred $eventsReceived;
-    private int $eventReceivedCount;
+    private int $eventReceivedCount = 0;
 
     protected function setUp(): void
     {

@@ -27,13 +27,16 @@ use Prooph\EventStore\Async\EventAppearedOnSubscription;
 use Prooph\EventStore\Async\EventStoreConnection;
 use Prooph\EventStore\Async\Internal\EventHandler;
 use Prooph\EventStore\EndPoint;
+use Prooph\EventStore\EventStoreSubscription;
 use Prooph\EventStore\Exception\CannotEstablishConnection;
 use Prooph\EventStore\Exception\EventStoreConnectionException;
 use Prooph\EventStore\Exception\InvalidOperationException;
 use Prooph\EventStore\Exception\ObjectDisposed;
 use Prooph\EventStore\Internal\Consts;
 use Prooph\EventStore\ListenerHandler;
+use Prooph\EventStore\ResolvedEvent;
 use Prooph\EventStore\SubscriptionDropped;
+use Prooph\EventStore\SubscriptionDropReason;
 use Prooph\EventStore\Util\Guid;
 use Prooph\EventStoreClient\ClientOperations\ClientOperation;
 use Prooph\EventStoreClient\ClientOperations\ConnectToPersistentSubscriptionOperation;
@@ -76,7 +79,7 @@ class EventStoreConnectionLogicHandler
     private StopWatch $stopWatch;
     private string $timerTickWatcherId = '';
 
-    private ReconnectionInfo $reconnInfo;
+    private ?ReconnectionInfo $reconnInfo = null;
     private HeartbeatInfo $heartbeatInfo;
     private AuthInfo $authInfo;
     private IdentifyInfo $identityInfo;
@@ -654,8 +657,8 @@ class EventStoreConnectionLogicHandler
                     $message->streamId(),
                     $message->resolveTo(),
                     $message->userCredentials(),
-                    fn (): EventAppearedOnSubscription => $message->eventAppeared(),
-                    fn (): SubscriptionDropped => $message->subscriptionDropped(),
+                    fn (EventStoreSubscription $subscription, ResolvedEvent $resolvedEvent): Promise => $message->eventAppeared($subscription, $resolvedEvent),
+                    function (EventStoreSubscription $subscription, SubscriptionDropReason $reason, ?Throwable $exception = null) use ($message): void { $message->subscriptionDropped($subscription, $reason, $exception); },
                     $this->settings->verboseLogging(),
                     fn (): ?TcpPackageConnection => $this->connection
                 );

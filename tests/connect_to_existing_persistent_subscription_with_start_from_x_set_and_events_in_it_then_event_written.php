@@ -37,7 +37,7 @@ class connect_to_existing_persistent_subscription_with_start_from_x_set_and_even
     private PersistentSubscriptionSettings $settings;
     private string $group = 'startinbeginning1';
     private Deferred $resetEvent;
-    private ResolvedEvent $firstEvent;
+    private ?ResolvedEvent $firstEvent = null;
     private EventId $eventId;
 
     protected function setUp(): void
@@ -65,8 +65,8 @@ class connect_to_existing_persistent_subscription_with_start_from_x_set_and_even
             $this->stream,
             $this->group,
             new class($this->resetEvent, $this->firstEvent) implements EventAppearedOnPersistentSubscription {
-                private $deferred;
-                private ResolvedEvent $firstEvent;
+                private Deferred $deferred;
+                private ?ResolvedEvent $firstEvent = null;
 
                 public function __construct($deferred, &$firstEvent)
                 {

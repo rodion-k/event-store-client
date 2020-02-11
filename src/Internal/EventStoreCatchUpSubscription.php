@@ -63,12 +63,12 @@ abstract class EventStoreCatchUpSubscription implements AsyncEventStoreCatchUpSu
 
     /** @var SplQueue<ResolvedEvent> */
     private SplQueue $liveQueue;
-    private ?EventStoreSubscription $subscription;
-    private DropData $dropData;
-    private bool $allowProcessing;
-    private bool $isProcessing;
-    protected bool $shouldStop;
-    private bool $isDropped;
+    private ?EventStoreSubscription $subscription = null;
+    private ?DropData $dropData = null;
+    private bool $allowProcessing = false;
+    private bool $isProcessing = false;
+    protected bool $shouldStop = false;
+    private bool $isDropped = false;
     private ManualResetEventSlim $stopped;
 
     private ListenerHandler $connectListener;

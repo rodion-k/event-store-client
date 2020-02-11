@@ -36,8 +36,8 @@ class update_existing_persistent_subscription_with_subscribers extends TestCase
     private string $stream;
     private PersistentSubscriptionSettings $settings;
     private Deferred $dropped;
-    private SubscriptionDropReason $reason;
-    private ?\Throwable $exception;
+    private ?SubscriptionDropReason $reason = null;
+    private ?Throwable $exception;
     private Throwable $caught;
 
     protected function given(): Generator
@@ -75,8 +75,8 @@ class update_existing_persistent_subscription_with_subscribers extends TestCase
             },
             new class($this->dropped, $this->reason, $this->exception) implements PersistentSubscriptionDropped {
                 private Deferred $dropped;
-                private SubscriptionDropReason $reason;
-                private ?\Throwable $exception;
+                private ?SubscriptionDropReason $reason;
+                private ?Throwable $exception;
 
                 public function __construct($dropped, &$reason, &$exception)
                 {
